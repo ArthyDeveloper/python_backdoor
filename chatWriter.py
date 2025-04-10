@@ -3,7 +3,7 @@ import time, sys, os;
 
 user = str(input("Digite seu nome: "))
 
-uri = "mongodb+srv://admin:sKIFp5wbtLKM3kNm@cluster0.u8bat.mongodb.net/"
+uri = "MONGODB_URI"
 client = MongoClient(uri)
 
 while True:
