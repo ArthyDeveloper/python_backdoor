@@ -1,5 +1,6 @@
 import keyboard # Ações do teclado;
 import pyautogui # Mover mouse;
+import pymongo # MongoDB;
 from pywinauto import Application # Alternar janelas;
 from pynput.mouse import Button, Controller # Ações do mouse;
 import time, subprocess # Tempo, delays e CMD;
