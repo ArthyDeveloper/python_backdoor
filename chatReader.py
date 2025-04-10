@@ -12,12 +12,11 @@ while True:
   except Exception as erro:
     print(f"Erro: {erro} | Tentando novamente.")
 
-col = client["Database"]["Comunicação"]
-result = col.find_one({"type": "usersDoc"})
-usersList = result.get("users")
-lastMsg = result.get("lastMessages", {})
 
 while True:
+  col = client["Database"]["Comunicação"]
+  result = col.find_one({"type": "usersDoc"})
+  lastMsg = result.get("lastMessages", {})
   for u, msg in lastMsg.items():
     if msg[0] != False:
       print(f"{u}: {msg[1]}")
