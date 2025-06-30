@@ -8,9 +8,9 @@ def main():
   webhook = os.getenv('TEST_WEBHOOK')
   send(webhook)
 
-def send(WEBHOOK_URL):
+def screenshot(monitor = 1):
   sct = mss.mss()
-  monitor = sct.monitors[1]
+  monitor = sct.monitors[monitor]
   img = sct.grab(monitor)
   image = Image.frombytes('RGB', img.size, img.rgb)
 
@@ -22,7 +22,11 @@ def send(WEBHOOK_URL):
     'file': ('screenshot.jpg', buf, 'image/jpeg')
   }
 
-  response = requests.post(WEBHOOK_URL, files=files)
+  return files
+
+def send(WEBHOOK_URL):
+  file = screenshot()
+  response = requests.post(WEBHOOK_URL, files=file)
   print(f"Uploaded screenshot: {response.status_code}")
 
 
