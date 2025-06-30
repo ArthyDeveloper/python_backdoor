@@ -1,6 +1,6 @@
 import requests, time, mss, io, os
 from PIL import Image
-from dotenv import dotenv_values, load_dotenv
+from dotenv import load_dotenv
 
 
 def main():
