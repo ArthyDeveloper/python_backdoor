@@ -1,8 +1,11 @@
-import requests, time, mss, io
+import requests, time, mss, io, os
 from PIL import Image
+from dotenv import dotenv_values, load_dotenv
+
 
 def main():
-  webhook = 'https://discord.com/api/webhooks/1387771873450000567/WLq_b-LvTwHl5BfWMaT-k6qH9OfuEdUMemjN3EdUa93lcP4jgN1wO-xTW9OL-KY0W_wk'
+  load_dotenv()
+  webhook = os.getenv('TEST_WEBHOOK')
   send(webhook)
 
 def send(WEBHOOK_URL):
