@@ -1,0 +1,15 @@
+---------------------
+| Phase 1 - Install |
+---------------------
+
+The installation is made via the execution of a .EXE.
+
+.EXE Functions:
+- Download the Main .EXE or other .EXE's.
+- Change registry key:
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+Type: Chain of characters.
+Values: Name of Chain | Location of .EXE.
+
+* CMD Command to add Registry:
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run /v Reg_Name /t REG_SZ /d EXE_Location
