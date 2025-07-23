@@ -13,3 +13,19 @@ Values: Name of Chain | Location of .EXE.
 
 * CMD Command to add Registry:
 REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run /v Reg_Name /t REG_SZ /d EXE_Location
+
+- Display confirmation message of succesfull Install then quit.
+END
+
+----------------------------
+| Phase 2 - Script Routine |
+----------------------------
+
+When script is initialized with the PC, it's meant to follow basic routines for configuration:
+- Check MongoDB for:
+* Specific Machine Webhooks >
+> Prints when asked
+> Logs of commands
+> KeyLogger (Maybe it isn't possible due to affecting performance)
+
+* Time delays (For scheduled events, if any exists)
