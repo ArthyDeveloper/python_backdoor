@@ -6,9 +6,19 @@ import requests, uuid, os
 def main():
   client = connect_db()
   machines_db = client['Machines']
+  wh_alerts = client['Ouroboros']['Ouroboros'].find_one({"webhook.wh_alerts": {"$exists": True}})
+  print(wh_alerts)
 
   mac = get_mac_address()
   add_machine(mac, machines_db)
+
+  webhook = os.getenv('TEST_WEBHOOK')
+  headers = {'Content-Type': 'application/json'}
+  '''
+  requests.post(webhook, headers=headers, json={
+    'content': f'Fresh install: {mac}'
+  })
+  '''
 
 def connect_db():
   load_dotenv()
