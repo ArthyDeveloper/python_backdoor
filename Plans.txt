@@ -29,3 +29,10 @@ When script is initialized with the PC, it's meant to follow basic routines for 
 > KeyLogger (Maybe it isn't possible due to affecting performance)
 
 * Time delays (For scheduled events, if any exists)
+
+----------------------
+| Random Annotations |
+----------------------
+
+For file transfers:
+With python, magic-wormhole, with cmd, curl transfer.scheduled
