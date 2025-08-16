@@ -15,9 +15,9 @@ def main():
   wh_alerts = col_configs.distinct('webhooks.wh_alerts')[0]
 
   install = add_machine(db_machines, mac)
-  if install[0] == True:
-    print(install[-1])
+  if install[0]:
     #message(wh_alerts, f'New machine: {mac}')
+    print(install[-1])
   else:    
     print(install[-1])
 
@@ -51,11 +51,11 @@ def add_machine(db_machines, mac):
           }
         }
       )
-      return [True, 'Machine Added!']
+      return (True, 'Machine Added!')
     else:
-      return [True, 'Machine Already Exists!']
+      return (True, 'Machine Already Exists!')
   except Exception as e:
-    return [False, e]
+    return (False, e)
 
 def get_mac_address():
   try:
