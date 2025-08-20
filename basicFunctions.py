@@ -14,14 +14,13 @@ def esperar(tempo):
 
 def click(numClicks=1, esquerdoOuDireito=True):
   try:
-    for x in range(0, numClicks):
-      match esquerdoOuDireito:
-        case 1: # Click Esquerdo;
-          mouse.press(Button.left)
-          mouse.release(Button.left)
-        case 2: # Click Direito;
-          mouse.press(Button.right)
-          mouse.release(Button.right)
+    for _ in range(0, numClicks):
+      if esquerdoOuDireito: # Click Esquerdo;
+        mouse.press(Button.left)
+        mouse.release(Button.left)
+      else: # Click Direito;
+        mouse.press(Button.right)
+        mouse.release(Button.right)
   except TypeError: pass
 
 def mover(x, y, duração=0.1):
