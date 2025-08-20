@@ -15,11 +15,18 @@ def main():
   wh_alerts = col_configs.distinct('webhooks.wh_alerts')[0]
 
   install = add_machine(db_machines, mac)
-  if install[0]:
-    #message(wh_alerts, f'New machine: {mac}')
-    print(install[-1])
-  else:    
-    print(install[-1])
+  match install[0]:
+    case 1: # Fresh install
+      message(wh_alerts, f'Fresh install: {mac}')
+      print(install[-1])
+    
+    case 2: # Machine already exists
+      message(wh_alerts, f'Already installed.\nMac: {mac}')
+      print(install[-1])
+    
+    case _: # Error
+      message(wh_alerts, f'Error on installer: {install[-1]}')
+      print(install[-1])
 
 def connect_db():
   #TODO: Colocar URI fixa.
@@ -51,17 +58,17 @@ def add_machine(db_machines, mac):
           }
         }
       )
-      return (True, 'Machine Added!')
+      return (1, 'Machine Installed!')
     else:
-      return (True, 'Machine Already Exists!')
+      return (2, 'Machine Already Exists!')
   except Exception as e:
-    return (False, e)
+    return (3, e)
 
 def get_mac_address():
   try:
     mac = uuid.getnode()
     if (mac >> 40) % 2:
-      return "unknown_mac"  # Random MAC
+      return "unknown_mac" # Random MAC
     return str(mac)
   except:
     return "unknown_mac"
