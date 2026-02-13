@@ -1,6 +1,7 @@
 import keyboard # Ações do teclado;
 import pyautogui # Mover mouse;
 import pymongo # MongoDB;
+import wmi # Task Manager
 from pywinauto import Application # Alternar janelas;
 from pynput.mouse import Button, Controller # Ações do mouse;
 import time, subprocess # Tempo, delays e CMD;
@@ -12,10 +13,10 @@ def esperar(tempo):
     time.sleep(tempo)
   except TypeError: pass
 
-def click(numClicks=1, esquerdoOuDireito=True):
+def click(numClicks=1, leftClick=True):
   try:
     for _ in range(0, numClicks):
-      if esquerdoOuDireito: # Click Esquerdo;
+      if leftClick: # Click Esquerdo;
         mouse.press(Button.left)
         mouse.release(Button.left)
       else: # Click Direito;
@@ -23,9 +24,13 @@ def click(numClicks=1, esquerdoOuDireito=True):
         mouse.release(Button.right)
   except TypeError: pass
 
-def mover(x, y, duração=0.1):
+def mover(x, y=False, speed=0.1):
   try:
-    pyautogui.moveTo(x, y, duration=duração)
+    if not y and type(x) == tuple: # Now accepts tuple value
+      c_x, c_y = x
+      pyautogui.moveTo(c_x, c_y, duration=speed)
+    else:
+      pyautogui.moveTo(x, y, duration=speed)
   except TypeError: pass
 
 def escrever(texto):
@@ -75,3 +80,6 @@ def runCMD(comandosCMD, assincrono=True):
     else:
       subprocess.run(f"cmd /c {comandosCMD}")
   except TypeError: pass
+
+def get_processes():
+  ...
