@@ -1,9 +1,9 @@
 import keyboard # Ações do teclado;
 import pyautogui # Ações do mouse;
-import pymongo # MongoDB;
 import wmi # Task Manager;
 from pywinauto import Application # Alternar janelas;
 import time, subprocess # Tempo, delays e CMD;
+import rotatescreen as rs # Rotacionar tela;
 
 #from pynput.mouse import Button, Controller # Ações do mouse;
 #mouse = Controller()
@@ -73,6 +73,22 @@ def winR(action):
     escrever(action)
     botaoTeclado("enter")
   except TypeError: pass
+
+# Rotaciona a tela em loop ou para um ângulo específico.
+# TODO: Criar modo de rotação único e resetar orientação para modo anterior.
+def rotate_screen(only_primary_monitor_rotation=True, loops=1, delay_per_rotation=0.5):
+  angles = [0, 90, 180, 270]
+  displays = rs.get_displays()
+  primary = rs.get_primary_display()
+
+  for _ in range(loops):
+    for angle in angles:
+      esperar(delay_per_rotation)
+      if only_primary_monitor_rotation:
+        primary.rotate_to(angle)
+      else:
+        for display in displays:
+          display.rotate_to(angle)
 
 # -----------------------------------
 # Comandos baseados em CMD / Terminal
