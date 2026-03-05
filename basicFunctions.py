@@ -1,3 +1,6 @@
+import warnings, sys
+warnings.filterwarnings("ignore", category=UserWarning)
+sys.coinit_flags = 0
 import keyboard # Ações do teclado;
 import pyautogui # Ações do mouse;
 import wmi # Task Manager;
@@ -74,13 +77,16 @@ def winR(action):
     botaoTeclado("enter")
   except TypeError: pass
 
-# Rotaciona a tela em loop ou para um ângulo específico.
-# TODO: Criar modo de rotação único e resetar orientação para modo anterior.
-def rotate_screen(only_primary_monitor_rotation=True, loops=1, delay_per_rotation=0.5):
+# Rotaciona telas em loop.
+def screen_barrel_roll(only_primary_monitor_rotation=False, loops=1, delay_per_rotation=0.5):
   angles = [0, 90, 180, 270]
   displays = rs.get_displays()
+  original_orientations = []
   primary = rs.get_primary_display()
+  for display in displays:
+    original_orientations.append(display.current_orientation)
 
+  # Girando telas.
   for _ in range(loops):
     for angle in angles:
       esperar(delay_per_rotation)
@@ -89,6 +95,20 @@ def rotate_screen(only_primary_monitor_rotation=True, loops=1, delay_per_rotatio
       else:
         for display in displays:
           display.rotate_to(angle)
+  
+  # Ajustando telas como eram antes.
+  for idx, display in enumerate(displays):
+    display.rotate_to(original_orientations[idx])
+
+# Rotaciona tela em específico para ângulo específico.
+def rotate_single_screen(screen=0, angle=0, reset_orientation=[False, 0]):
+  displays = rs.get_displays()
+  selected_screen = displays[screen]
+  original_orientation = selected_screen.current_orientation
+  selected_screen.rotate_to(angle)
+  if reset_orientation[0]:
+    esperar(reset_orientation[1])
+    selected_screen.rotate_to(original_orientation)
 
 # -----------------------------------
 # Comandos baseados em CMD / Terminal
