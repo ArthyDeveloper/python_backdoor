@@ -1,15 +1,50 @@
 import warnings, sys
-warnings.filterwarnings("ignore", category=UserWarning)
-sys.coinit_flags = 0
 import keyboard # Ações do teclado;
 import pyautogui # Ações do mouse;
 import wmi # Task Manager;
 from pywinauto import Application # Alternar janelas;
 import time, subprocess # Tempo, delays e CMD;
 import rotatescreen as rs # Rotacionar tela;
+import aiohttp, asyncio, requests
+from aiohttp import ContentTypeError
 
-#from pynput.mouse import Button, Controller # Ações do mouse;
-#mouse = Controller()
+warnings.filterwarnings("ignore", category=UserWarning)
+sys.coinit_flags = 0
+
+# Checar Internet
+async def check_internet_connection(url='https://www.google.com/', timeout=5):
+  try:
+    requests.get(url, timeout=timeout)
+    return True
+  except (requests.ConnectionError, requests.Timeout, requests.exceptions.InvalidSchema) as exception:
+    return False
+
+# Requests para API e requests genéricos (Usados para Webhook, por exemplo.)
+async def api_request(type, data={}):
+  route = f"http://localhost:3000/api" # TODO: Trocar para link normal depois.
+  async with aiohttp.ClientSession() as session:
+    if type == "GET":
+      async with session.get(url=route) as response:
+        return await response.json()
+    elif type == "POST":
+      async with session.post(url=route, json=data) as response:
+        return await response.json()
+
+async def request(link, type, data={}):
+  async with aiohttp.ClientSession() as session:
+    if type == "GET":
+      async with session.get(url=link) as response:
+        return await response.json()
+    elif type == "POST":
+      async with session.post(url=link, json=data) as response:
+        if response.status == 204:
+          return [True, "Requisição feita com sucesso."]
+        try:
+          print("Tentando JSON")
+          return await response.json()
+        except ContentTypeError:
+          print("Tentando TEXT")
+          return await response.text()
 
 # Congela script por um dado tempo.
 def esperar(tempo:int):

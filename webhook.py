@@ -1,12 +1,20 @@
 import requests, time, mss, io, os
 from PIL import Image
 from dotenv import load_dotenv
+from basicFunctions import request
+import asyncio
 
-
-def main():
+async def main():
   load_dotenv()
   webhook = os.getenv('TEST_WEBHOOK')
-  send(webhook)
+  #send(webhook)
+  resultado = await request(webhook, "POST", {"username":"Anunciador", "content": "Só um teste\nOk"})
+  print(resultado)
+
+def send(WEBHOOK_URL):
+  file = screenshot()
+  response = requests.post(WEBHOOK_URL, files=file)
+  print(f"Uploaded screenshot: {response.status_code}")
 
 def screenshot(monitor = 1):
   sct = mss.mss()
@@ -24,11 +32,5 @@ def screenshot(monitor = 1):
 
   return files
 
-def send(WEBHOOK_URL):
-  file = screenshot()
-  response = requests.post(WEBHOOK_URL, files=file)
-  print(f"Uploaded screenshot: {response.status_code}")
-
-
 if __name__ == '__main__':
-  main()
+  asyncio.run(main())
