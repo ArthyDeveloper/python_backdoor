@@ -1,7 +1,7 @@
 import warnings, sys
 import keyboard # Ações do teclado;
 import pyautogui # Ações do mouse;
-import wmi # Task Manager;
+import wmi, uuid # Task Manager;
 from pywinauto import Application # Alternar janelas;
 import time, subprocess # Tempo, delays e CMD;
 import rotatescreen as rs # Rotacionar tela;
@@ -11,16 +11,27 @@ from aiohttp import ContentTypeError
 warnings.filterwarnings("ignore", category=UserWarning)
 sys.coinit_flags = 0
 
+# Startup.
+# Pega webhooks e configurações do DB.
+async def startup():
+  mac_address = get_mac()
+  return {
+    "mac_address": mac_address
+  }
+
 # Checar Internet
 async def check_internet_connection(url='https://www.google.com/', timeout=5):
-  try:
-    requests.get(url, timeout=timeout)
-    return True
-  except (requests.ConnectionError, requests.Timeout, requests.exceptions.InvalidSchema) as exception:
-    return False
+  internet = False
+  while not internet:
+    try:
+      requests.get(url, timeout=timeout)
+      internet = True
+    except (requests.ConnectionError, requests.Timeout, requests.exceptions.InvalidSchema) as exception:
+      esperar(10)
+      pass
 
 # Requests para API e requests genéricos (Usados para Webhook, por exemplo.)
-async def api_request(type, data={}):
+async def api_request(type: str, data: object):
   route = f"http://localhost:3000/api" # TODO: Trocar para link normal depois.
   async with aiohttp.ClientSession() as session:
     if type == "GET":
@@ -195,3 +206,13 @@ def taskkill(PID:int):
     print(f"{stdout.decode("utf-8")}")
   if stderr:
     print(f"{stderr.decode("utf-8")}")
+
+# Get MAC
+def get_mac():
+  try:
+    mac = uuid.getnode()
+    if (mac >> 40) % 2:
+      return "unknown_mac"  # Random MAC
+    return ':'.join(('%012X' % mac)[i:i+2] for i in range(0, 12, 2))
+  except:
+    return "unknown_mac"
