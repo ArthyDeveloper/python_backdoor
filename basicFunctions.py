@@ -30,6 +30,20 @@ async def check_internet_connection(url='https://www.google.com/', timeout=5):
       esperar(10)
       pass
 
+# Checar registro de máquina e registrar caso necessário.
+# Também entra em modo de espera caso webhook não esteja configurado.
+async def check_registration(mac_address:str):
+  # Checando registro
+  reg = await api_request("POST", {"route":"register", "data":{"mac_address":mac_address}})
+  reg = reg["result"]["status"]
+  print(reg)
+  if reg[0]:
+  # TODO: Manter pausado até webhook estar setado.
+    await api_request("POST", {"route":"webhook", "data":{"mac_address":mac_address, "webhook_message":f"Máquina `{mac_address}` registrada!", "webhook_image":""}})
+
+  # Enviar webhook (Máquina ligada)
+  await api_request("POST", {"route":"webhook", "data":{"mac_address":mac_address, "webhook_message":f"Máquina ligada `{mac_address}`", "webhook_image":""}})
+
 # Requests para API e requests genéricos (Usados para Webhook, por exemplo.)
 async def api_request(type: str, data: object):
   route = f"http://localhost:3000/api" # TODO: Trocar para link normal depois.

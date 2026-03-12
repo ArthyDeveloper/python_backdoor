@@ -1,4 +1,4 @@
-import requests, asyncio
+import asyncio
 from basicFunctions import *
 import warnings, sys
 
@@ -10,9 +10,8 @@ async def main():
   await check_internet_connection()
 
   # Resgatando valores do DB.
-  configs = await startup()
-  mac_address = configs["mac_address"]
-  await api_request("POST", {"route":"webhook", "data":{"mac_address":mac_address, "webhook_message":f"Máquina ligada `{mac_address}`", "webhook_image":""}})
+  mac_address = get_mac()
+  await check_registration(mac_address)
 
 if __name__ == "__main__":
   asyncio.run(main())
