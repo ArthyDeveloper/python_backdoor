@@ -11,6 +11,8 @@ from aiohttp import ContentTypeError
 warnings.filterwarnings("ignore", category=UserWarning)
 sys.coinit_flags = 0
 
+middleware = "http://localhost:3000/api"
+
 # Startup.
 # Pega webhooks e configurações do DB.
 async def startup():
@@ -38,15 +40,15 @@ async def check_registration(mac_address:str):
   reg = reg["result"]["status"]
   print(reg)
   if reg[0]:
-  # TODO: Manter pausado até webhook estar setado.
+    # TODO: Manter pausado até webhook estar setado.
     await api_request("POST", {"route":"webhook", "data":{"mac_address":mac_address, "webhook_message":f"Máquina `{mac_address}` registrada!", "webhook_image":""}})
 
-  # Enviar webhook (Máquina ligada)
+  # Enviar webhook (Máquina ligada) TODO: Ativar
   await api_request("POST", {"route":"webhook", "data":{"mac_address":mac_address, "webhook_message":f"Máquina ligada `{mac_address}`", "webhook_image":""}})
 
 # Requests para API e requests genéricos (Usados para Webhook, por exemplo.)
 async def api_request(type: str, data: object):
-  route = f"http://localhost:3000/api" # TODO: Trocar para link normal depois.
+  route = middleware # TODO: Trocar para link normal depois.
   async with aiohttp.ClientSession() as session:
     if type == "GET":
       async with session.get(url=route) as response:

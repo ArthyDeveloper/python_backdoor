@@ -1,14 +1,17 @@
 import requests, time, mss, io, os
 from PIL import Image
 from dotenv import load_dotenv
-from basicFunctions import request
 import asyncio
+from basicFunctions import *
 
 async def main():
   load_dotenv()
   webhook = os.getenv('TEST_WEBHOOK')
   #send(webhook)
-  resultado = await request(webhook, "POST", {"username":"Anunciador", "content": "Só um teste\nOk"})
+  #resultado = await request(webhook, "POST", {"username":"Anunciador", "content": "Só um teste\nOk"})
+  image = screenshot()["file"]
+  #resultado = await api_request("POST", {"route":"webhook", "data":{"mac_address":"18:03:73:EB:0A:54", "nickname":"Test", "webhook_message":"teste", "webhook_file":image}})
+  resultado = requests.post(webhook, files={"file":image})
   print(resultado)
 
 def send(WEBHOOK_URL):
